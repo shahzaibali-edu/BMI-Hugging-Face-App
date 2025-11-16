@@ -1,37 +1,25 @@
-import gradio as gr
+import streamlit as st
 
-def bmi_calculator(weight, height):
-    # Check for zero height to avoid errors
-    if height == 0:
-        return "Height cannot be zero."
-    
-    # Calculate BMI: weight (kg) / height (m)^2
+st.title("Simple BMI Calculator")
+
+# Input fields
+weight = st.number_input("Enter Weight (kg)", min_value=1.0, step=0.1)
+height = st.number_input("Enter Height (meters)", min_value=0.1, step=0.01)
+
+# Calculate button
+if st.button("Calculate BMI"):
+    # Calculation
     bmi = weight / (height ** 2)
     
-    # Determine category
+    # Display BMI
+    st.metric(label="Your BMI", value=f"{bmi:.2f}")
+    
+    # Logic for status
     if bmi < 18.5:
-        status = "Underweight"
+        st.warning("Status: Underweight")
     elif 18.5 <= bmi < 24.9:
-        status = "Normal weight"
+        st.success("Status: Normal weight")
     elif 25 <= bmi < 29.9:
-        status = "Overweight"
+        st.warning("Status: Overweight")
     else:
-        status = "Obesity"
-        
-    return f"Your BMI is {bmi:.2f} ({status})"
-
-# Create the interface
-interface = gr.Interface(
-    fn=bmi_calculator,
-    inputs=[
-        gr.Number(label="Weight (kg)"),
-        gr.Number(label="Height (meters)")
-    ],
-    outputs="text",
-    title="Simple BMI Calculator",
-    description="Enter your weight in kilograms and height in meters."
-)
-
-# Launch the app
-if __name__ == "__main__":
-    interface.launch()
+        st.error("Status: Obesity")
